@@ -1,120 +1,129 @@
-# Task Manager Application
+# Task Manager - Frontend
 
-A Full Stack Task Management Application built with Spring Boot and React (Vite).
+React 18 frontend built with Vite, connected to the Spring Boot backend via Axios.
 
 ---
 
-## Tech Stack
+## Folder Structure
 
-**Backend**
-- Java 17
-- Spring Boot 3.2
-- Spring Data JPA
-- MySQL Database
-- Swagger (SpringDoc OpenAPI)
-
-**Frontend**
-- React 18
-- Vite
-- Axios
+```
+frontend/
+└── src/
+    ├── components/
+    │   ├── TaskForm.jsx      -> Add new task form
+    │   └── TaskList.jsx      -> Display, complete, delete tasks
+    ├── services/
+    │   └── taskService.js    -> All Axios API calls
+    ├── App.jsx               -> Root component, state management
+    ├── App.css               -> All styles
+    └── main.jsx              -> Entry point
+```
 
 ---
 
 ## Prerequisites
 
-Make sure you have these installed:
-
-| Tool | Version | Download |
-|------|---------|----------|
-| Java JDK | 17+ | https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html |
-| Spring Tool Suite | 4+ | https://spring.io/tools |
-| Node.js | 18+ | https://nodejs.org |
-| MySQL | 8+ | https://dev.mysql.com/downloads/installer/ |
+- Node.js 18+
+- npm 9+
+- Backend must be running on http://localhost:8080
 
 ---
 
-## Database Setup
+## How to Run
 
-1. Open MySQL Workbench
-2. Run this command:
+Open a terminal inside the frontend/ folder and run these commands:
 
-```sql
-CREATE DATABASE taskdb;
-```
-
----
-
-## Backend Setup
-
-1. Open **Spring Tool Suite**
-2. Go to **File → Import → Existing Maven Project**
-3. Select the `backend/` folder
-4. Open `src/main/resources/application.properties`
-5. Update your MySQL password:
-
-```properties
-spring.datasource.password=your_mysql_password
-```
-
-6. Right-click `TaskManagerApplication.java` → **Run As → Spring Boot App**
-7. Backend runs at: `http://localhost:8080`
-8. Swagger UI: `http://localhost:8080/swagger-ui/index.html`
-
----
-
-## Frontend Setup
-
-1. Open terminal and navigate to the frontend folder:
+### Step 1 - Install all dependencies
 
 ```bash
-cd frontend
 npm install
+```
+
+### Step 2 - Install Axios
+
+```bash
+npm install axios
+```
+
+### Step 3 - Start development server
+
+```bash
 npm run dev
 ```
 
-2. Frontend runs at: `http://localhost:5173`
+App runs at: http://localhost:5173
 
 ---
 
-## API Endpoints
+## Important Note
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /tasks | Create a new task |
-| GET | /tasks | Get all tasks |
-| GET | /tasks/{id} | Get task by ID |
-| PUT | /tasks/{id} | Update task |
-| DELETE | /tasks/{id} | Delete task |
+The frontend talks to the backend at http://localhost:8080.
 
----
+Make sure the backend is running first before opening the frontend in the browser.
 
-## Features
+If your backend runs on a different port, update this line in src/services/taskService.js:
 
-- Add new tasks with title and description
-- View all tasks in a list
-- Mark tasks as Completed
-- Delete tasks
-- REST API with Swagger documentation
-
----
-
-## Project Structure
-
+```js
+const BASE_URL = 'http://localhost:8080/tasks';
 ```
-task-manager/
-├── backend/
-│   └── src/main/java/com/taskmanager/
-│       ├── controller/    → TaskController.java
-│       ├── entity/        → Task.java
-│       ├── repository/    → TaskRepository.java
-│       ├── service/       → TaskService.java
-│       ├── config/        → SwaggerConfig.java
-│       └── exception/     → GlobalExceptionHandler.java
-├── frontend/
-│   └── src/
-│       ├── components/    → TaskForm.jsx, TaskList.jsx
-│       ├── services/      → taskService.js
-│       ├── App.jsx
-│       └── main.jsx
-└── README.md
-```
+
+---
+
+## Component Breakdown
+
+### App.jsx
+- Root component of the entire application
+- Holds the tasks state array using useState
+- Fetches all tasks on page load using useEffect
+- Passes fetchTasks as a prop so child components can trigger a refresh after any action
+
+### TaskForm.jsx
+- Controlled form with title and description input fields
+- On submit: calls createTask() API, clears the form, and refreshes the task list
+- Shows loading state on the button while the API call is in progress
+- Prevents empty task submission using required and trim() check
+
+### TaskList.jsx
+- Renders all tasks as individual cards
+- Each card shows title, description, and a status badge
+- Mark Complete button - only visible for PENDING tasks
+- Delete button - always visible for all tasks
+- Shows a friendly empty message if no tasks exist yet
+
+### taskService.js
+- Central place for all API calls
+- Uses Axios for HTTP requests
+- Exports four functions: getAllTasks, createTask, updateTask, deleteTask
+
+---
+
+## Available Scripts
+
+| Command           | Description                        |
+|-------------------|------------------------------------|
+| npm run dev       | Start development server           |
+| npm run build     | Build for production               |
+| npm run preview   | Preview production build locally   |
+
+---
+
+## Backend Connection
+
+This frontend connects to the following backend URLs:
+
+| Purpose    | URL                                            |
+|------------|------------------------------------------------|
+| Base API   | http://localhost:8080/tasks                    |
+| Swagger UI | http://localhost:8080/swagger-ui/index.html    |
+
+---
+---
+
+## Dependencies Used
+
+| Package    | Purpose                          |
+|------------|----------------------------------|
+| react      | UI library                       |
+| react-dom  | Render React to the browser      |
+| axios      | HTTP client for API calls        |
+| vite       | Build tool and dev server        |
